@@ -10,30 +10,33 @@ Kod na serwo,przyciski, lampkę
 Servo myservo;
 int pos = 0;
 
-void setup() {
- myservo.attach(servo);
- pinMode(led, OUTPUT);
- pinMode(button1, INPUT);
- pinMode(button2,INPUT);
- myservo.write(90);
-}
-
-void loop() {
-if(digitalRead(button1) == HIGH)
+void setup() 
 {
-  myservo.write(0);
-  digitalWrite(led,HIGH);
-  back();
-  }
-  if(digitalRead(button2) == HIGH)
-  {
-    myservo.write(180);
-    digitalWrite(led,LOW);
-  }
-  
+	 myservo.attach(servo);
+	 pinMode(led, OUTPUT);
+ 	pinMode(button1, INPUT);
+	 pinMode(button2,INPUT);
+ 	myservo.write(90);
 }
 
-void back(){
+void loop() 
+{
+	if(digitalRead(button1) == HIGH)
+	{
+	 	 myservo.write(0);
+	 	 digitalWrite(led,HIGH);
+ 		 back();
+ 	 }
+ 	if(digitalRead(button2) == HIGH)
+ 	{
+    		myservo.write(180);
+   		 digitalWrite(led,LOW);
+  	}
+   
+}
+
+void back()
+{
   delay(2000);
   myservo.write(90);
   digitalWrite(led,LOW);
@@ -53,7 +56,8 @@ Kod na LCD i dalmierz
 #include <LiquidCrystal.h>
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7);
 
-void setup() {
+void setup() 
+{
   Serial.begin (9600);
   pinMode(trigPin, OUTPUT); //wejscie wyzwalające
   pinMode(echoPin, INPUT); //z wyjścia echo odczytujemy zmierzona odleglosc
@@ -61,14 +65,16 @@ void setup() {
   lcd.clear();
 }
  
-void loop() {
+void loop() 
+{
   Serial.print(zmierz());
   Serial.println(" cm");
   
   pokaz_na_lcd();
 }
 
-int zmierz(){
+int zmierz()
+{
   long czas, dystans;
   
   digitalWrite(trigPin, LOW);
