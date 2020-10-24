@@ -1,35 +1,9 @@
-#include "Servo.h"
-#define button1 5
-#define button2 6
-#define led 4
-#define servo 9
-Servo myservo;
-int pos = 0;
+Repozytorium:
+Adrian Gębalski
+Dominik Draguła
+Piotr Fryzeł
 
-void setup() {
- myservo.attach(servo);
- pinMode(led, OUTPUT);
- pinMode(button1, INPUT);
- pinMode(button2,INPUT);
- myservo.write(90);
-}
+Mechatronic Design AGH
 
-void loop() {
-if(digitalRead(button1) == HIGH)
-{
-  myservo.write(0);
-  digitalWrite(led,HIGH);
-  back();
-  }
-  if(digitalRead(button2) == HIGH)
-  {
-    myservo.write(180);
-    digitalWrite(led,LOW);
-  }
-  
-}
-void back(){
-  delay(2000);
-  myservo.write(90);
-  digitalWrite(led,LOW);
-}
+Kody dostępne w kolejnych plikach.
+
