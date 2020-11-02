@@ -1,0 +1,95 @@
+#define pin1 9
+#define pin2 10
+#define pin3 11
+#define pin4 12
+
+#define button_forward 5
+#define button_backward 6
+#define button_allow 7
+
+#define dioda 2
+
+int pole1[] ={0,0,0,0, 0,1,1,1, 0};
+int pole2[] ={0,0,0,1, 1,1,0,0, 0};
+int pole3[] ={0,1,1,1, 0,0,0,0, 0};
+int pole4[] ={1,1,0,0, 0,0,0,1, 0};
+
+int poleStep = 0;
+int stan = 0;
+int working_mode = 3;
+
+int number_of_starts = 0;
+
+void setup() {
+  Serial.begin(9600);
+
+  pinMode(dioda,OUTPUT);
+  
+  pinMode(pin1, OUTPUT);
+  pinMode(pin2, OUTPUT);  
+  pinMode(pin3, OUTPUT);  
+  pinMode(pin4, OUTPUT);   
+  
+  pinMode(button_forward,INPUT_PULLUP);
+  pinMode(button_backward,INPUT_PULLUP); 
+  pinMode(button_allow,INPUT_PULLUP);
+
+}
+
+void loop() {
+  if (digitalRead(button_allow) == LOW) {
+    if (stan == 0){
+      stan = 1;
+      number_of_starts ++;
+      Serial.print("Number of program starts: ");
+      Serial.println(number_of_starts);
+      delay(200);
+    }else if(stan == 1) {
+      stan = 0;
+      delay(200);
+    }
+    
+  }
+  if (stan == 1){
+    digitalWrite(dioda,HIGH);
+
+    if (digitalRead(button_forward) == LOW) {
+      working_mode = 1;
+    }else if (digitalRead(button_backward) == LOW) {
+      working_mode = 2;
+    } else {
+      working_mode = 3;
+    }
+
+
+    if (working_mode == 1) {
+      poleStep ++;
+      driveStepper(poleStep);
+    } else if (working_mode == 2) {
+      poleStep --;
+      driveStepper(poleStep);
+    } else {
+      driveStepper(8);
+    }
+
+    if (poleStep>7){
+      poleStep = 0;
+    }
+    if (poleStep < 0) {
+      poleStep = 7;
+    }
+    delay(1);
+    
+  } else{
+    digitalWrite(dioda,LOW);
+  }
+    
+}
+
+void driveStepper(int c)
+{
+     digitalWrite(pin1, pole1[c]);  
+     digitalWrite(pin2, pole2[c]); 
+     digitalWrite(pin3, pole3[c]); 
+     digitalWrite(pin4, pole4[c]);   
+}
