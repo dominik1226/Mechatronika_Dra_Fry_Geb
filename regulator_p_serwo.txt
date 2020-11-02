@@ -1,0 +1,53 @@
+#define trigPin 12
+#define echoPin 11
+
+
+#include <servo.h>
+
+#define servo 9
+Servo myservo;
+
+float odleglosc=0.0;
+float blad;
+
+float kp=5;
+float odleglosc_ustawiona= 20;
+float pid_p;
+
+void setup()
+{
+  Serial.begin (9600);
+  pinMode(trigPin, OUTPUT); //wejscie wyzwalające
+  pinMode(echoPin, INPUT); //z wyjścia echo odczytujemy zmierzona odleglosc
+
+  myservo.attach(servo);
+  myservo.write(90);
+
+}
+
+void loop()
+{
+    odleglosc=zmierz();
+    blad = odleglosc_ustawiona-odleglosc;
+    pid_p = kp * blad;
+
+    myservo.write(90 + pid_p);
+
+}
+
+int zmierz()
+{
+  long czas;
+  float dystans;
+
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(12);
+  digitalWrite(trigPin, LOW);
+
+  czas = pulseIn(echoPin, HIGH); //czas zmierzonego sygalu, dlugosc sygnalu jest proporcjonalna do odleglosci
+  dystans = czas / 58; // 58 Wynika z czasu przez jaki dźwięk pokonuje odległość 1 cm oraz wzoru na odległość jaką przedstawił producent
+
+   return dystans;
+}
