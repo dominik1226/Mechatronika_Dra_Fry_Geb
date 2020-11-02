@@ -1,3 +1,4 @@
+#include "PinChangeInterrupt.h"
 #define pin1 9
 #define pin2 10
 #define pin3 11
@@ -20,6 +21,9 @@ int working_mode = 3;
 
 int number_of_starts = 0;
 
+unsigned long Czas = 0;
+unsigned long odmierzonyCzas = 0;
+
 void setup() {
   Serial.begin(9600);
 
@@ -34,22 +38,11 @@ void setup() {
   pinMode(button_backward,INPUT_PULLUP); 
   pinMode(button_allow,INPUT_PULLUP);
 
+  attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(7), ustaw, RISING);
 }
 
 void loop() {
-  if (digitalRead(button_allow) == LOW) {
-    if (stan == 0){
-      stan = 1;
-      number_of_starts ++;
-      Serial.print("Number of program starts: ");
-      Serial.println(number_of_starts);
-      delay(200);
-    }else if(stan == 1) {
-      stan = 0;
-      delay(200);
-    }
-    
-  }
+
   if (stan == 1){
     digitalWrite(dioda,HIGH);
 
@@ -92,4 +85,17 @@ void driveStepper(int c)
      digitalWrite(pin2, pole2[c]); 
      digitalWrite(pin3, pole3[c]); 
      digitalWrite(pin4, pole4[c]);   
+}
+
+void ustaw(){
+    if (stan == 0 ){
+      stan = 1;
+      number_of_starts ++;
+      Serial.print("Number of program starts: ");
+      Serial.println(number_of_starts);
+      delay(50);
+    }else if(stan == 1) {
+      stan = 0;
+      delay(50);
+    }  
 }
