@@ -34,11 +34,7 @@ void loop() {
   pid_p = kp * blad;
   
   
-  if (pid_p > 90){
-    myservo.write(180);
-  } else if (pid_p < -90 ){
-    myservo.write(0);
-  } else {
+  if (odleglosc >=2 && odleglosc <= 38){
     myservo.write(90+pid_p);
   }
   
@@ -69,4 +65,5 @@ int pokaz_na_lcd(){
   lcd.print("cm");
   delay(100);
   lcd.clear(); 
+}.clear(); 
 }
