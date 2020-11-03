@@ -21,8 +21,6 @@ int working_mode = 3;
 
 int number_of_starts = 0;
 
-unsigned long Czas = 0;
-unsigned long odmierzonyCzas = 0;
 
 void setup() {
   Serial.begin(9600);
