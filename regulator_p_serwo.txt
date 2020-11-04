@@ -2,18 +2,21 @@
 #define echoPin 11
 
 #include "Servo.h"
-#define servo 9 
+#define servo 9
 Servo myservo;
 
 #include <LiquidCrystal.h>
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7);
 
-long odleglosc=0;
-long blad;
+int odleglosc = 0;
+int blad;
 
-long kp=5;
-long odleglosc_ustawiona= 20;
-long pid_p;
+int kp = 5;
+int odleglosc_ustawiona = 20;
+int pid_p;
+
+unsigned long czas = 0;
+static unsigned long czas_servo = 0;
 
 void setup() {
   Serial.begin (9600);
@@ -24,46 +27,48 @@ void setup() {
   myservo.attach(servo);
   myservo.write(90);
 }
- 
+
 void loop() {
-  //Serial.print(zmierz());
-  //Serial.println(" cm");
-  
-  odleglosc = zmierz();
-  blad = odleglosc_ustawiona - odleglosc;
-  pid_p = kp * blad;
-  
-  
-  if (odleglosc >=2 && odleglosc <= 38){
-    myservo.write(90+pid_p);
-  }
-  
+  czas = millis();
+  servo_p();
   pokaz_na_lcd();
 }
 
-int zmierz(){
+int zmierz() {
   long czas, dystans;
-  
+
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(12);
   digitalWrite(trigPin, LOW);
-  
+
   czas = pulseIn(echoPin, HIGH); //czas zmierzonego sygalu, dlugosc sygnalu jest proporcjonalna do odleglosci
   dystans = czas / 58; // 58 Wynika z czasu przez jaki dźwięk pokonuje odległość 1 cm oraz wzoru na odległość jaką przedstawił producent
 
-   return dystans;
+  return dystans;
 }
 
-int pokaz_na_lcd(){
-  lcd.setCursor(0,1);
+void pokaz_na_lcd() {
+  lcd.setCursor(0, 1);
   lcd.print("Dystans:");
-  lcd.setCursor(9,1);
+  lcd.setCursor(9, 1);
   lcd.print(zmierz());
-  lcd.setCursor(13,1);
+  lcd.setCursor(13, 1);
   lcd.print("cm");
   delay(100);
-  lcd.clear(); 
-}.clear(); 
+  lcd.clear();
+}
+
+void servo_p() {
+  if (czas - czas_servo >= 100) {
+    odleglosc = zmierz();
+    blad = odleglosc_ustawiona - odleglosc;
+    pid_p = kp * blad;
+
+    if (odleglosc >= 2 && odleglosc <= 38) {
+      myservo.write(90 + pid_p);
+    }
+
+  }
 }
